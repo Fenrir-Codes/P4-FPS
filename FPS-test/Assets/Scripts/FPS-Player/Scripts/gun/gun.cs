@@ -53,6 +53,7 @@ public class gun : MonoBehaviour
         currentAmmo = maxAmmo;
         
         muzzle = Camera.main;
+      
         
     }
 
