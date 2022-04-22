@@ -2952,6 +2952,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
+      propertyPath: aimSpeed
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
       propertyPath: animator
       value: 
       objectReference: {fileID: 101278656}
@@ -2972,6 +2976,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 97b31b4b10b0ee44bba0fc310602456f, type: 3}
     - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
+      propertyPath: reloadTime
+      value: 2.967
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
       propertyPath: bloodEffect
       value: 
       objectReference: {fileID: 1000012909287652, guid: abb9f519b142e304d9c45b56afa768bc, type: 3}
@@ -2987,6 +2995,14 @@ PrefabInstance:
       propertyPath: reloadSource
       value: 
       objectReference: {fileID: 638824482}
+    - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
+      propertyPath: zoomDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
+      propertyPath: zoomMultiplier
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7813705026109105319, guid: 5b20448ec79c27b4a81aeffb4587bc6c, type: 3}
       propertyPath: MagazinesizeText
       value: 

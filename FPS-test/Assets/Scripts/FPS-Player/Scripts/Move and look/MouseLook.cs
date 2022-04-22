@@ -3,13 +3,12 @@ using UnityEngine;
 public class MouseLook : MonoBehaviour
 {
     // This script should to be attached to main camera, then link the player body to it as reference.
-
-    [SerializeField]
-    private float mouseSensitivity = 100f;
-    [SerializeField]
-    private Transform playerBody;
+    [Header("Mouse settings (Main Camera)")]
+    [Tooltip("Mouse sensitivity")]
+    [SerializeField] private float mouseSensitivity = 100f;
+    [Tooltip("Transform player")]
+    [SerializeField] private Transform playerBody;  // Firstpersonplayer
     private float xRotation = 0f;
-
 
     // Start is called before the first frame update
     void Start()

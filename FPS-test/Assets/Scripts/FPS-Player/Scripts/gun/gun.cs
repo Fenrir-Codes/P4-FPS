@@ -10,51 +10,65 @@ public class gun : MonoBehaviour
 
     //Weapon settings
     [Header("weapon settings")]
-    [SerializeField]
-    private float damage = 25f;
-    [SerializeField]
-    private float range = 1000f;
-    [SerializeField]
-    private float fireRate = 10f; // fire rate is 600 / min for the ak so we have to divide 600 with 60 = 10 rounds/sec
-    [SerializeField]
-    private float maxAmmo = 31;
-    [SerializeField]
-    private float reloadTime = 2.967f;
-    [SerializeField]
-    private Text MagazinesizeText;
-
+    [Tooltip("Weapon danage")]
+    [SerializeField] private float damage = 12.5f;
+    [Tooltip("Weapon range in meters")]
+    [SerializeField] private float range = 500f;
+    [Tooltip("Rate of fire (fire rate is 600 / min for the ak so we have to divide 600 with 60 = 10 rounds/sec)")]
+    [SerializeField] private float fireRate = 10f; // fire rate is 600 / min for the ak so we have to divide 600 with 60 = 10 rounds/sec
+    [Tooltip("Maximum ammo inthe magazine")]
+    [SerializeField] private float maxAmmo = 31;
+    [Tooltip("Reload time (used for wait until the animator finis the animation, it takes almost 3 secondt to animate reload)")]
+    [SerializeField] private float reloadTime = 2.967f;
+    [Tooltip("Text shown on the right corner (Ammo in the magazine)")]
+    [SerializeField] private Text MagazinesizeText;
 
     private float currentAmmo = 0;
     private float hitForce = 30f;
     private float checkWeaponAnimationTime = 3.817f;
     private float fireDelay = 0.5f;
 
-
     //objects
     [Header("Objects to attach to weapon")]
-    [SerializeField] private GameObject bloodEffect; // the impact effect that spawns
-    [SerializeField] private GameObject impactEffect; // the impact effect that spawns
-    [SerializeField] private ParticleSystem muzzleFlash; // muzzle particle system
-    private Camera muzzle; //main camera as muzzle
-    [SerializeField] private AudioSource fireSource; //Weapon
-    [SerializeField] private AudioSource reloadSource; //reloadsource
-    [SerializeField] private AudioClip reloadClip; // reload sound
-    [SerializeField] private AudioClip fireClip; // shoot sound
-    [SerializeField] private Animator animator; // animator
-    
+    [Tooltip("The blood spill effect spawn (object)")]
+    [SerializeField] private GameObject bloodEffect;
+    [Tooltip("The impact effect spawn (object)")]
+    [SerializeField] private GameObject impactEffect;
+    [Tooltip("Muzzle particle system (object)")]
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [Tooltip("Main Camera used as muzzle")]
+    private Camera muzzle;
+    [Tooltip("Source of the fire sound effect (weapon)")]
+    [SerializeField] private AudioSource fireSource;
+    [Tooltip("Source of the reload sound effect (weapon)")]
+    [SerializeField] private AudioSource reloadSource;
+    [Tooltip("Reload sound")]
+    [SerializeField] private AudioClip reloadClip;
+    [Tooltip("Shooting sound")]
+    [SerializeField] private AudioClip fireClip;
+    [Tooltip("Animator")]
+    [SerializeField] private Animator animator;
+
+    [Header("Aim zoom preferences")]
+    [Tooltip("Field of view value")]
+    [SerializeField] float target = 30f;
+    [Tooltip("Zoom multiplier")]
+    [SerializeField] public float zoomMultiplier = 10;
+    [Tooltip("The default Field of View")]
+    [SerializeField] private float defaultFOV = 71f;
+    [Tooltip("Duration of the zoom (how much seconds it takes)")]
+    [SerializeField] public float zoomDuration = 0.3f;
+
     //booleans
     private bool canShoot = true;
     private bool isReloading = false;
+    private bool canAim = false;
 
 
     private void Awake()
     {
-
-        currentAmmo = maxAmmo;
-        
+        currentAmmo = maxAmmo;      
         muzzle = Camera.main;
-      
-        
     }
 
     /* 
@@ -108,16 +122,20 @@ public class gun : MonoBehaviour
         //Aiming
         if (Input.GetMouseButton(1))
         {
+            canAim = true;
             Ads();
         }
         else
         {
+            canAim = false;
             animator.SetBool("ADS", false);
+            float angle = Mathf.Abs((defaultFOV / zoomMultiplier) - defaultFOV);
+            muzzle.fieldOfView = Mathf.MoveTowards(muzzle.fieldOfView, defaultFOV, angle / zoomDuration * Time.deltaTime);
         }
         #endregion
 
         #region Check your weapon animation
-        if (Input.GetKey(KeyCode.C))
+        if (Input.GetKey(KeyCode.C) && canAim == false)
         {
             StartCoroutine(checkWeapon());
             return;
@@ -125,7 +143,6 @@ public class gun : MonoBehaviour
         #endregion
 
         MagazinesizeText.text = currentAmmo.ToString();
-
         
     }
 
@@ -148,8 +165,15 @@ public class gun : MonoBehaviour
             enemy foe = hit.transform.GetComponent<enemy>();
             if (foe != null)
             {
+                damage = 12.5f;
                 foe.takeDamage(damage);
             }
+            if (hit.collider is SphereCollider)
+            {
+                damage = 100f;
+                foe.takeDamage(damage);
+            }
+
 
             //if hit hits rigidbody add force to it
             if (hit.rigidbody != null)
@@ -179,9 +203,10 @@ public class gun : MonoBehaviour
     IEnumerator Reload()
     {
         canShoot = false;
+        canAim = false;
+        muzzle.fieldOfView = defaultFOV;
         isReloading = true;
         reloadSource.PlayOneShot(reloadClip);
-
         animator.SetBool("Reloading",true);
 
         yield return new WaitForSeconds(reloadTime);
@@ -198,7 +223,15 @@ public class gun : MonoBehaviour
     void Ads()
     {
         canShoot = true;
-        animator.SetBool("ADS", true);
+
+        if (canAim == true)
+        {
+            animator.SetBool("ADS", true);
+
+            float angle = Mathf.Abs((defaultFOV / zoomMultiplier) - defaultFOV);
+            muzzle.fieldOfView = Mathf.MoveTowards(muzzle.fieldOfView, target, angle / zoomDuration * Time.deltaTime);
+        }
+
     }
     #endregion
 
@@ -206,7 +239,10 @@ public class gun : MonoBehaviour
     IEnumerator checkWeapon()
     {
         canShoot = false;
+        canAim = false;
         isReloading = false;
+        muzzle.fieldOfView = defaultFOV;
+
         if (isReloading != true && canShoot != true)
         {
             animator.SetBool("CheckWeapon", true);
@@ -216,6 +252,7 @@ public class gun : MonoBehaviour
         }
     }
     #endregion
+
 
 
 

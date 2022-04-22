@@ -5,27 +5,28 @@ public class Movement : MonoBehaviour
     // This script have to be attached on tha player object.
 
     //character controller
-    [Header("Character controller")]
-    [SerializeField]
-    private CharacterController controller;
-    public Animator animator;
+    [Header("Character controller (First person player)")]
+    [Tooltip("The caharacter controller")]
+    [SerializeField] private CharacterController controller;
+    [Tooltip("Animator for the character body")]
+    [SerializeField] private Animator animator;
 
-    private gun gunScript;
-    private Animator anim;
+    private Animator anim;  // animator on the weapon
 
     //Variables
     [Header("Gravity setting")]
-    [SerializeField]
-    private float Gravity = 9.81f;
+    [Tooltip("Gravity value")]
+    [SerializeField] private float Gravity = 9.81f;
+
+    [Header("Player settings")]
+    [Tooltip("Walking speed value")]
+    [SerializeField] private float walkSpeed = 8f;
+    [Tooltip("Running speed value")]
+    [SerializeField]  private float runSpeed = 12f;
+    [Tooltip("Jump force value")]
+    [SerializeField]  private float jumpForce = 3f;
 
     private float moveSpeed = 0f;
-    [Header("Player settings")]
-    [SerializeField]
-    private float walkSpeed = 8f;
-    [SerializeField]
-    private float runSpeed = 12f;
-    [SerializeField]
-    private float jumpForce = 3f;
 
     //Vectors
     private Vector3 moveDirection;
@@ -41,8 +42,7 @@ public class Movement : MonoBehaviour
 
     private void Awake()
     {
-        gunScript = GetComponent<gun>();
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponentInChildren<Animator>();  // getting weapon animator
     }
 
     // Update is called once per frame
