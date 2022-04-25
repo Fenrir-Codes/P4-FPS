@@ -90,10 +90,6 @@ public class testsway : MonoBehaviour
         _factorX = -Input.GetAxisRaw("Mouse X") * _amount;
         _factorY = -Input.GetAxisRaw("Mouse Y") * _amount;
 
-        // GET OUR AXIS AGAIN FOR ROTATION
-        _tiltZ = Input.GetAxis("Mouse X") * _tiltAngle;
-        _tiltX = Input.GetAxis("Mouse Y") * _tiltAngle;
-
         // CLAMP THEM BY A CERTIAN RANGE TO PREVENT GLITCHING - BOTH AXIS
         Clamp(_factorX, -_maxAmount, _maxAmount);
         Clamp(_factorY, -_maxAmount, _maxAmount);

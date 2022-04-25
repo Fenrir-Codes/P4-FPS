@@ -33,7 +33,8 @@ public class FootSteps : MonoBehaviour
 
         if (movement.isWalking == true)
         {
-            audioSource.pitch = Random.Range(0.6f, 1.2f);
+            audioSource.pitch = Random.Range(0.4f, 1.5f);
+            stoneSteps.pitch = Random.Range(0.4f, 1.5f);
             if (!audioSource.isPlaying && floorTag == "ForestFloor")
             {
                 audioSource.Play();
