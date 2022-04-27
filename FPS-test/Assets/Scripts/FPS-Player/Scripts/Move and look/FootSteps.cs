@@ -7,50 +7,55 @@ public class FootSteps : MonoBehaviour
     // This script have to be attached on tha player object.
 
     Movement movement;  // MOVEMENT SCRIPT
-    private AudioSource audioSource;
-    private AudioSource stoneSteps;
-    public Transform cube;
-    private string floorTag;
+    private AudioSource defaultAudio;
+    private AudioSource StoneEffect;
+    public Transform StoneSurface;
+    public Transform defaultSurface;
+    private string Tag;
 
     // Start is called before the first frame update
     void Awake()
     {
         movement = GetComponent<Movement>();
-        audioSource = GetComponent<AudioSource>();
-        stoneSteps = cube.GetComponent<AudioSource>();
-    }
+        defaultAudio = GetComponent<AudioSource>();
+        StoneEffect = StoneSurface.GetComponent<AudioSource>();
+}
 
     // Update is called once per frame
     void Update()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit))
-        {
-            //This is the colliders tag
-            floorTag = hit.collider.tag;
-            Debug.Log(floorTag);
-        }
+        playEffects();
+    }
+
+    void playEffects()
+    {
+        defaultAudio.pitch = Random.Range(0.4f, 1.5f);
 
         if (movement.isWalking == true)
         {
-            audioSource.pitch = Random.Range(0.4f, 1.5f);
-            stoneSteps.pitch = Random.Range(0.4f, 1.5f);
-            if (!audioSource.isPlaying && floorTag == "ForestFloor")
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit))
             {
-                audioSource.Play();
-                stoneSteps.Stop();
-            }
-            if (!stoneSteps.isPlaying && floorTag == "Stone")
-            {
-                audioSource.Stop();
-                stoneSteps.Play();
+                Tag = hit.collider.tag;
+                Debug.Log(Tag);
+
+                if (!defaultAudio.isPlaying && Tag == "Gravel")
+                {
+                    defaultAudio.Play();
+                    StoneEffect.Stop();
+                }
+                if (!StoneEffect.isPlaying && Tag == "Stone")
+                {
+                    defaultAudio.Stop();
+                    StoneEffect.Play();
+                }
+
             }
         }
         else
         {
-            audioSource.Stop();
-            stoneSteps.Stop();
+            defaultAudio.Stop();
+            StoneEffect.Stop();
         }
-
     }
 }
