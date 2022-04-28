@@ -20,9 +20,9 @@ public class Movement : MonoBehaviour
 
     [Header("Player settings")]
     [Tooltip("Walking speed value")]
-    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float walkSpeed = 3f;
     [Tooltip("Running speed value")]
-    [SerializeField]  private float runSpeed = 6f;
+    [SerializeField]  private float runSpeed = 5f;
     [Tooltip("Jump force value")]
     [SerializeField]  private float jumpForce = 5f;
 

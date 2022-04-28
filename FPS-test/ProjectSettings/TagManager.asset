@@ -5,13 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - ForestFloor
   - Stone
   - Gravel
   - Sand
   - Metal
   - Terrain
   - Envirounment
+  - Head
   layers:
   - Default
   - TransparentFX

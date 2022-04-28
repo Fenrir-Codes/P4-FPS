@@ -8,12 +8,10 @@ public class enemy : MonoBehaviour
 {
     public float health = 100f;
 
-    public float xPosition = 0f;
-    public float zPosition = 0f;
+    public float walkRadius = 0f;
 
-    //private float calmSpeed = 0;
     public float wanderingSpeed = 0.2f;
-    public float chasingSpeed = 8f;
+    public float chasingSpeed = 6f;
 
     private NavMeshAgent agent = null;
 
@@ -36,6 +34,7 @@ public class enemy : MonoBehaviour
         movetotarget();
     }
 
+    #region Take damage script
     public void takeDamage(float amount)
     {
         health -= amount;
@@ -44,7 +43,9 @@ public class enemy : MonoBehaviour
             StartCoroutine(Dying());
         }
     }
+    #endregion
 
+    #region IEnumerator Dying script
     IEnumerator Dying()
     {
         animator.SetBool("ZombieDying", true);
@@ -52,45 +53,41 @@ public class enemy : MonoBehaviour
         Destroy(gameObject);
         Destroy(Enemy);
     }
+    #endregion
 
+    #region move to target function
     void movetotarget()
     {
-        if (Enemy != null)
+        var distance = Vector3.Distance(Enemy.position, Player.position);
+        DistanceText.text = distance.ToString();
+
+        if (agent != null && distance > 20f && agent.remainingDistance <= agent.stoppingDistance)
         {
-
-            var distance = Vector3.Distance(Enemy.position, Player.position);
-
-            DistanceText.text = distance.ToString();
-
-            if (distance > 20f)
-            {
-                wandering();
-            }
-            if (distance < 20f)
-            {
-                chaseing();
-            }
-            if (distance < 4f)
-            {
-                attack();
-            }
-
-        }     
-
+            wandering();
+        }
+        if (distance < 18f)
+        {
+            chaseing();
+        }
+        if (distance < 4f)
+        {
+            attack();
+        }
     }
+    #endregion
 
+    #region wandering script
     void wandering()
     {
-        xPosition = Random.Range(80, 500);
-        zPosition = Random.Range(80, 500);
-
         animator.SetBool("Wandering", true);
         animator.SetBool("ZombieRun", false);
         animator.SetBool("ZombieAttack", false);
-        agent.SetDestination(new Vector3(xPosition, 11f, zPosition));
+        agent.SetDestination(WanderingAgents());
         agent.speed = wanderingSpeed;
     }
+    #endregion
 
+    #region chaseing script
     void chaseing()
     {
         animator.SetBool("ZombieRun", true);
@@ -99,7 +96,9 @@ public class enemy : MonoBehaviour
         agent.speed = chasingSpeed;
         agent.SetDestination(Player.position);
     }
+    #endregion
 
+    #region attack script
     void attack()
     {
 
@@ -107,4 +106,22 @@ public class enemy : MonoBehaviour
         animator.SetBool("Wandering", false);
         animator.SetBool("ZombieRun", false);
     }
+    #endregion
+
+    #region vecro3 setting wanderind destination
+    public Vector3 WanderingAgents()
+    {
+        walkRadius = Random.Range(1, 500);
+        Vector3 finalPosition = Vector3.zero;
+        Vector3 randomPosition = Random.insideUnitSphere * walkRadius;
+        randomPosition += transform.position;
+
+        if (NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, walkRadius, 1))
+        {
+            finalPosition = hit.position;
+        }
+        return finalPosition;
+    }
+    #endregion
+
 }

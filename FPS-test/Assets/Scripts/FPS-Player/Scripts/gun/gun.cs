@@ -168,7 +168,7 @@ public class gun : MonoBehaviour
                 damage = 12.5f;
                 foe.takeDamage(damage);
             }
-            if (hit.collider is SphereCollider)
+            if (hit.collider.transform.name =="Head")
             {
                 damage = 100f;
                 foe.takeDamage(damage);
