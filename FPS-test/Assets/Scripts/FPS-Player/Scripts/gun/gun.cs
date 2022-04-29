@@ -10,8 +10,9 @@ public class gun : MonoBehaviour
 
     //Weapon settings
     [Header("weapon settings")]
-    [Tooltip("Weapon danage")]
-    [SerializeField] private float damage = 12.5f;
+    [Tooltip("Weapon damage")]
+    [SerializeField] private float damage = 0.0f;
+    [SerializeField] private float headshotDamage = 0.0f;
     [Tooltip("Weapon range in meters")]
     [SerializeField] private float range = 500f;
     [Tooltip("Rate of fire (fire rate is 600 / min for the ak so we have to divide 600 with 60 = 10 rounds/sec)")]
@@ -24,7 +25,7 @@ public class gun : MonoBehaviour
     [SerializeField] private Text MagazinesizeText;
 
     private float currentAmmo = 0;
-    private float hitForce = 30f;
+    private float hitForce = 15f;
     private float checkWeaponAnimationTime = 3.817f;
     private float fireDelay = 0.5f;
 
@@ -36,6 +37,8 @@ public class gun : MonoBehaviour
     [SerializeField] private GameObject impactEffect;
     [Tooltip("Muzzle particle system (object)")]
     [SerializeField] private ParticleSystem muzzleFlash;
+    [Tooltip("Muzzle particle system (object)")]
+    [SerializeField] private ParticleSystem bulletShells;
     [Tooltip("Main Camera used as muzzle")]
     private Camera muzzle;
     [Tooltip("Source of the fire sound effect (weapon)")]
@@ -151,6 +154,7 @@ public class gun : MonoBehaviour
     {
         //play particle system
         muzzleFlash.Play();
+        bulletShells.Play();
         currentAmmo --;
         
 
@@ -165,13 +169,13 @@ public class gun : MonoBehaviour
             enemy foe = hit.transform.GetComponent<enemy>();
             if (foe != null)
             {
-                damage = 12.5f;
+                damage = Random.Range(10.5f, 18f);
                 foe.takeDamage(damage);
             }
             if (hit.collider.transform.name =="Head")
             {
-                damage = 100f;
-                foe.takeDamage(damage);
+                headshotDamage = Random.Range(91f, 100f);
+                foe.takeDamage(headshotDamage);
             }
 
 

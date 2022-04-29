@@ -20,9 +20,9 @@ public class SpawnEnemy : MonoBehaviour
     {
         while (spawned < maxEnemy)
         {
-            xPosition = Random.Range(200, 120);
-            zPosition = Random.Range(200, 125);
-            Instantiate(Enemy, new Vector3(xPosition, 11, zPosition), Quaternion.identity);
+            xPosition = Random.Range(230, 240);
+            zPosition = Random.Range(145,170);
+            Instantiate(Enemy, new Vector3(xPosition, 0.1f, zPosition), Quaternion.identity);
             yield return new WaitForSeconds(0.1f);
             spawned += 1;
         }

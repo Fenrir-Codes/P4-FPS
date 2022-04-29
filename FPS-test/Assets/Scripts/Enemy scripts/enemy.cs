@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class enemy : MonoBehaviour
 {
+    public float maxHealt = 100f;
     public float health = 100f;
 
     public float walkRadius = 0f;
@@ -15,9 +16,11 @@ public class enemy : MonoBehaviour
 
     private NavMeshAgent agent = null;
 
+
+    public Slider slider;
     public Transform Player;
     public Transform Enemy;
-    
+
     Animator animator;
 
     public Text DistanceText;
@@ -27,17 +30,25 @@ public class enemy : MonoBehaviour
        // Player = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        health = maxHealt;
     }
 
     private void Update()
     {
+        calculateHealth();
         movetotarget();
+    }
+
+    void calculateHealth()
+    {
+        slider.value = health;
     }
 
     #region Take damage script
     public void takeDamage(float amount)
     {
-        health -= amount;
+        Debug.Log("Taken damage:  "+amount);
+        health-= amount;
         if (health <= 0f)
         {
             StartCoroutine(Dying());
@@ -48,6 +59,7 @@ public class enemy : MonoBehaviour
     #region IEnumerator Dying script
     IEnumerator Dying()
     {
+        agent.isStopped = true;
         animator.SetBool("ZombieDying", true);
         yield return new WaitForSeconds(3f);
         Destroy(gameObject);
