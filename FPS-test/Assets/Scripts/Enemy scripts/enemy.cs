@@ -16,18 +16,21 @@ public class enemy : MonoBehaviour
 
     private NavMeshAgent agent = null;
 
-
     public Slider slider;
     public Transform Player;
     public Transform Enemy;
+
 
     Animator animator;
 
     public Text DistanceText;
 
+    float damage = 1.0f;
+    float attackRange = 2f;
+    public Transform attackpoint;
+
     private void Awake()
     {
-       // Player = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         health = maxHealt;
@@ -37,6 +40,7 @@ public class enemy : MonoBehaviour
     {
         calculateHealth();
         movetotarget();
+
     }
 
     void calculateHealth()
@@ -47,7 +51,6 @@ public class enemy : MonoBehaviour
     #region Take damage script
     public void takeDamage(float amount)
     {
-        Debug.Log("Taken damage:  "+amount);
         health-= amount;
         if (health <= 0f)
         {
@@ -63,7 +66,6 @@ public class enemy : MonoBehaviour
         animator.SetBool("ZombieDying", true);
         yield return new WaitForSeconds(3f);
         Destroy(gameObject);
-        Destroy(Enemy);
     }
     #endregion
 
@@ -71,7 +73,6 @@ public class enemy : MonoBehaviour
     void movetotarget()
     {
         var distance = Vector3.Distance(Enemy.position, Player.position);
-        DistanceText.text = distance.ToString();
 
         if (agent != null && distance > 20f && agent.remainingDistance <= agent.stoppingDistance)
         {
@@ -113,10 +114,11 @@ public class enemy : MonoBehaviour
     #region attack script
     void attack()
     {
-
         animator.SetBool("ZombieAttack", true);
         animator.SetBool("Wandering", false);
         animator.SetBool("ZombieRun", false);
+        giveDamageToPlayer();
+
     }
     #endregion
 
@@ -136,4 +138,20 @@ public class enemy : MonoBehaviour
     }
     #endregion
 
+
+    void giveDamageToPlayer()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, attackRange))
+        {
+            if (hit.transform.gameObject.CompareTag("Player"))
+            {
+                playerHealthManager player = hit.transform.gameObject.GetComponent<playerHealthManager>();
+                if (player != null)
+                {
+                    player.takeDamage(damage);
+                }
+            }
+        }
+    }
 }

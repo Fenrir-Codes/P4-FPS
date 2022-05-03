@@ -17,17 +17,16 @@ public class gun : MonoBehaviour
     [SerializeField] private float range = 500f;
     [Tooltip("Rate of fire (fire rate is 600 / min for the ak so we have to divide 600 with 60 = 10 rounds/sec)")]
     [SerializeField] private float fireRate = 10f; // fire rate is 600 / min for the ak so we have to divide 600 with 60 = 10 rounds/sec
-    [Tooltip("Maximum ammo inthe magazine")]
-    [SerializeField] private float maxAmmo = 31;
+    [Tooltip("Maximum ammo")]
+    [SerializeField] private int ammoReserve = 0;
+    public int maxAmmunition = 124;
+    [Tooltip("Magazine")]
+    [SerializeField] private int magazineSize = 31;
     [Tooltip("Reload time (used for wait until the animator finis the animation, it takes almost 3 secondt to animate reload)")]
     [SerializeField] private float reloadTime = 2.967f;
     [Tooltip("Text shown on the right corner (Ammo in the magazine)")]
     [SerializeField] private Text MagazinesizeText;
-
-    private float currentAmmo = 0;
-    private float hitForce = 15f;
-    private float checkWeaponAnimationTime = 3.817f;
-    private float fireDelay = 0.5f;
+    [SerializeField] private Text ammoReserveText;
 
     //objects
     [Header("Objects to attach to weapon")]
@@ -35,6 +34,8 @@ public class gun : MonoBehaviour
     [SerializeField] private GameObject bloodEffect;
     [Tooltip("The impact effect spawn (object)")]
     [SerializeField] private GameObject impactEffect;
+    [Tooltip("The bullet hole effect spawn (object)")]
+    [SerializeField] private GameObject bulletHole;
     [Tooltip("Muzzle particle system (object)")]
     [SerializeField] private ParticleSystem muzzleFlash;
     [Tooltip("Muzzle particle system (object)")]
@@ -62,15 +63,22 @@ public class gun : MonoBehaviour
     [Tooltip("Duration of the zoom (how much seconds it takes)")]
     [SerializeField] public float zoomDuration = 0.3f;
 
+    private int currentAmmo = 0;
+    private int firedAmmo = 0;
+    private float hitForce = 15f;
+    private float checkWeaponAnimationTime = 3.817f;
+    private float fireDelay = 0.5f;
+
     //booleans
-    private bool canShoot = true;
+    public bool canShoot = false;
     private bool isReloading = false;
     private bool canAim = false;
 
 
     private void Awake()
     {
-        currentAmmo = maxAmmo;      
+        ammoReserve = maxAmmunition;
+        currentAmmo = magazineSize;
         muzzle = Camera.main;
     }
 
@@ -79,8 +87,14 @@ public class gun : MonoBehaviour
      The Update function runs exactly once per frame, while the FixedUpdate function runs at a fixed rate. 
      What this means is: The Update function will run as often as your game’s frame rate. For example,
      if your game runs at 120 frames per second, the Update function will be called 120 times within 1 second.*/
-    void FixedUpdate()
+    void Update()
     {
+        #region if max ammunition is 0 setting ammo to 0
+        if (ammoReserve <= 0)
+        {
+            ammoReserve = 0;
+        }
+        #endregion
 
         #region check on isReloading boolean
         if (isReloading)
@@ -90,7 +104,7 @@ public class gun : MonoBehaviour
         #endregion
 
         #region call reload automatically if magazine is empty
-        if (currentAmmo <= 0)
+        if (currentAmmo <= 0 && ammoReserve > 0)
         {
             StartCoroutine(Reload());
             return;
@@ -99,22 +113,30 @@ public class gun : MonoBehaviour
 
         #region Call Shooting on button clik or hold
         //shooting single or full auto
-        if (canShoot && Input.GetMouseButton(0) && Time.time >= fireDelay)
+        if (Input.GetMouseButton(0) && Time.time >= fireDelay)
         {
-            animator.SetBool("Fireing", true);
-            fireDelay = Time.time + 1f / fireRate;
-            fireSource.PlayOneShot(fireClip);
-            Shoot();
-        }
-        else
-        {
-            animator.SetBool("Fireing", false);
+            if (ammoReserve > 0 || currentAmmo > 0)
+            {
+                canShoot = true;
+            }
+            else
+            {
+                canShoot = false;
+            }
+
+            if (canShoot == true)
+            {
+                fireDelay = Time.time + 1f / fireRate;
+                Shoot();
+            }
+
         }
         #endregion
 
         #region Reload
-        if (Input.GetKey(KeyCode.R) && currentAmmo != maxAmmo)
+        if (Input.GetKey(KeyCode.R) && currentAmmo < magazineSize && ammoReserve > 0)
         {
+            canShoot = false;
             animator.SetBool("Fireing", false);
             StartCoroutine(Reload());
             return;
@@ -145,25 +167,30 @@ public class gun : MonoBehaviour
         }
         #endregion
 
+        ammoReserveText.text = ammoReserve.ToString() + " | ";
         MagazinesizeText.text = currentAmmo.ToString();
-        
+
     }
 
     #region Shooting script
     void Shoot()
     {
+        //animator and sound for fireing
+        animator.SetBool("Fireing", true);
+        fireSource.PlayOneShot(fireClip);
+
         //play particle system
         muzzleFlash.Play();
         bulletShells.Play();
+
+        //count ammo
         currentAmmo --;
-        
+        firedAmmo = (magazineSize - currentAmmo);
 
         //raycast shoot
         RaycastHit hit;
         if (Physics.Raycast(muzzle.transform.position, muzzle.transform.forward, out hit, range))
         {
-            //Debug.Log("Hit " + hit.transform.name);
-            //Debug.DrawRay(transform.position, transform.forward, Color.green);
 
             //if the object wich has the enemy script on it not null take the damage
             enemy foe = hit.transform.GetComponent<enemy>();
@@ -178,7 +205,6 @@ public class gun : MonoBehaviour
                 foe.takeDamage(headshotDamage);
             }
 
-
             //if hit hits rigidbody add force to it
             if (hit.rigidbody != null)
             {
@@ -188,13 +214,11 @@ public class gun : MonoBehaviour
             //If the objet we are hitting tagged as Enemy spawn blood splash instead of bullet impact
             if (hit.transform.tag =="Enemy")
             {
-                GameObject bloodObject = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(bloodObject, 0.3f);
+                spawnEnemyBloodSpill(hit);
             }
             else
             {
-                GameObject impactObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(impactObject, 0.3f);
+                spawnBulletHoleAndImpactEffect(hit);
             }
 
         }
@@ -215,7 +239,15 @@ public class gun : MonoBehaviour
 
         yield return new WaitForSeconds(reloadTime);
 
-        currentAmmo = maxAmmo;
+        if (ammoReserve < 31)
+        {
+            currentAmmo = ammoReserve;
+        }
+        else
+        {
+            currentAmmo = magazineSize;
+        }
+        ammoReserve -= firedAmmo;
 
         isReloading = false;
         canShoot = true;
@@ -257,7 +289,40 @@ public class gun : MonoBehaviour
     }
     #endregion
 
+    #region spawnBloodSpill code
+    void spawnEnemyBloodSpill(RaycastHit hit)
+    {
+        //blood effect
+        GameObject bloodObject = Instantiate(bloodEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        bloodObject.transform.position += bloodObject.transform.forward / 1000;
+        Destroy(bloodObject, 0.3f);
+    }
+    #endregion
 
+    #region spawn Bullet impact and effect
+    void spawnBulletHoleAndImpactEffect(RaycastHit hit)
+    {
 
+        //bullet sparkle
+        GameObject impactObject = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        impactObject.transform.position += impactObject.transform.forward / 1000;
+        Destroy(impactObject, 0.3f);
+
+        //bullet hole
+        GameObject bulletImpact = Instantiate(bulletHole, hit.point, Quaternion.LookRotation(hit.normal));
+        bulletImpact.transform.position += bulletImpact.transform.forward / 1000;
+        Destroy(bulletImpact, 5f);
+    }
+    #endregion
+
+    public void addAmmo(int refill)
+    {
+        ammoReserve += refill;
+        Debug.Log(refill);
+        if (ammoReserve >= maxAmmunition)
+        {
+            ammoReserve = maxAmmunition;
+        }
+    }
 
 }

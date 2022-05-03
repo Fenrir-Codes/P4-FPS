@@ -37,7 +37,6 @@ public class FootSteps : MonoBehaviour
             if (Physics.Raycast(transform.position, Vector3.down, out hit))
             {
                 Tag = hit.collider.tag;
-                Debug.Log(Tag);
 
                 if (!defaultAudio.isPlaying && Tag == "Gravel")
                 {
