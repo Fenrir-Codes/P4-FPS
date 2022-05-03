@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class WaterNoise : MonoBehaviour
 {
     public AudioClip triggerSound;
@@ -30,4 +31,57 @@ public class WaterNoise : MonoBehaviour
         }
 
     }
+
+    // AudioSource audioSource;
+    // public AudioClip triggerSound;
+
+    // public float fadeOutFactor = 0.08f;
+    // public float fadeInFactor = 0.08f;
+
+    // private bool fadeInOut = false;
+
+    // void Start()
+    // {
+    //     audioSource = GetComponent<AudioSource>();
+    //     audioSource.volume = 0.0f;
+    // }
+
+    // void Update()
+    // {
+    //     if (audioSource.volume <= 0.0f) { audioSource.Play(); }
+    //     if (audioSource.volume >= 1.0f) { audioSource.Stop(); }
+
+    //     if (fadeInOut == true)
+    //     {
+    //         if (audioSource.volume < 1.0f)
+    //         {
+    //             audioSource.volume += fadeInFactor * Time.deltaTime;
+    //         }
+    //     }
+
+    //     if (fadeInOut == false)
+    //     {
+    //         if (audioSource.volume > 0.0f)
+    //         {
+    //             audioSource.volume -= fadeOutFactor * Time.deltaTime;
+    //         }
+    //     }
+
+    // }
+
+    // void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.gameObject.CompareTag("Player"))
+    //     {
+    //         fadeInOut = true;
+    //     }
+    // }
+
+    // void OnTriggerExit(Collider other)
+    // {
+    //     if (other.gameObject.CompareTag("Player"))
+    //     {
+    //         fadeInOut = false;
+    //     }
+    // }
 }
