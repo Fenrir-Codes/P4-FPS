@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Lightpoles
   - pointLight
   - spotLight
+  - waterSound
   layers:
   - Default
   - TransparentFX
