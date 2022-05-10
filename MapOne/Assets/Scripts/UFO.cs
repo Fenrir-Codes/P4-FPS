@@ -14,13 +14,26 @@ public class UFO : MonoBehaviour
     IEnumerator shiftingLights()
     {
 
-        foreach (GameObject i in pointLights)
+        while (true)
         {
-            Debug.Log("Lights off!");
-            i.GetComponent<Light>().enabled = false;
-            yield return new WaitForSeconds(.5f);
-            i.GetComponent<Light>().enabled = true;
-            Debug.Log("Lights on!");
+            foreach (GameObject i in pointLights)
+            {
+                Debug.Log("Lights off!");
+                i.GetComponent<Light>().enabled = false;
+                Debug.Log("Lights on!");
+                pointLights[0].SetActive(true);
+                yield return new WaitForSeconds(.05f);
+                pointLights[1].SetActive(true);
+                yield return new WaitForSeconds(.05f);
+                pointLights[2].SetActive(true);
+                yield return new WaitForSeconds(.05f);
+                pointLights[3].SetActive(true);
+                yield return new WaitForSeconds(.05f);
+                pointLights[4].SetActive(true);
+                i.GetComponent<Light>().enabled = true;
+            }
         }
     }
+
+
 }
