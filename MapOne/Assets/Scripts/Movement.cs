@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    // This script have to be attached on tha player object.
+    // This script have to be attached on the player object.
 
     //character controller
     [SerializeField]
@@ -32,6 +32,8 @@ public class Movement : MonoBehaviour
     //Keycodes
     private KeyCode jumpButton = KeyCode.Space;
     private KeyCode runButton = KeyCode.LeftShift;
+
+    //private KeyCode useButton = KeyCode.E;
 
     // private void Awake()
     // {
