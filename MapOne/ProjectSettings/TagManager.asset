@@ -12,6 +12,7 @@ TagManager:
   - point2
   - point3
   - point4
+  - rockingChair
   layers:
   - Default
   - TransparentFX
