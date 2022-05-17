@@ -5,7 +5,7 @@ using UnityEngine;
 public class UFO : MonoBehaviour
 {
     // The lights on UFO turning on and off with a timeDelay on 0.05f
-    public GameObject[] pointLights;
+    [SerializeField] private GameObject[] pointLights;
 
     void Start()
     {
@@ -21,17 +21,14 @@ public class UFO : MonoBehaviour
             {
                 //Debug.Log("Lights off!");
                 i.GetComponent<Light>().enabled = false;
-                //Debug.Log("Lights on!");
-                pointLights[0].SetActive(true);
-                yield return new WaitForSeconds(.05f);
-                pointLights[1].SetActive(true);
-                yield return new WaitForSeconds(.05f);
-                pointLights[2].SetActive(true);
-                yield return new WaitForSeconds(.05f);
-                pointLights[3].SetActive(true);
-                yield return new WaitForSeconds(.05f);
-                pointLights[4].SetActive(true);
+                for (int j = 0; j < pointLights.Length; j++)
+                {
+                    pointLights[j].SetActive(true);
+                    yield return new WaitForSeconds(.05f);
+                }
                 i.GetComponent<Light>().enabled = true;
+
+                //Debug.Log("Lights on!");
             }
         }
     }

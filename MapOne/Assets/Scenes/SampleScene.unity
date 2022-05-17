@@ -14592,7 +14592,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 476241713}
   m_LocalRotation: {x: -0, y: -0.8688796, z: -0, w: -0.4950235}
-  m_LocalPosition: {x: 457.3, y: 12.5, z: 412.8}
+  m_LocalPosition: {x: 33.5, y: 21.13, z: 70.9}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 963194228}
@@ -17070,7 +17070,7 @@ GameObject:
   - component: {fileID: 638982131}
   - component: {fileID: 638982132}
   m_Layer: 8
-  m_Name: Point Light
+  m_Name: UFO Point Light
   m_TagString: point
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17311,7 +17311,7 @@ GameObject:
   - component: {fileID: 667306432}
   - component: {fileID: 667306433}
   m_Layer: 8
-  m_Name: Point Light (1)
+  m_Name: UFO Point Light (1)
   m_TagString: point
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17404,7 +17404,7 @@ GameObject:
   - component: {fileID: 676453479}
   - component: {fileID: 676453480}
   m_Layer: 8
-  m_Name: Point Light (2)
+  m_Name: UFO Point Light (2)
   m_TagString: point
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20983,7 +20983,7 @@ GameObject:
   - component: {fileID: 1038993441}
   - component: {fileID: 1038993442}
   m_Layer: 8
-  m_Name: Point Light (3)
+  m_Name: UFO Point Light (3)
   m_TagString: point
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32359,7 +32359,7 @@ GameObject:
   - component: {fileID: 1698296391}
   - component: {fileID: 1698296392}
   m_Layer: 8
-  m_Name: Point Light (4)
+  m_Name: UFO Point Light (4)
   m_TagString: point
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
